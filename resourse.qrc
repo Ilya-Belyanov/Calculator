@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>media/calc.png</file>
+    </qresource>
+</RCC>
