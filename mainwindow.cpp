@@ -106,18 +106,12 @@ void MainWindow::set_digits(QString text){
     if (checkMax()){
         QString all;
         all = ui->result->text();
-        if(all == '0'){
-            all = text;
+        if(lastNumber == "0"){
+            all.replace(all.size()-1, 1, text);
             lastNumber = "";
         }
-        else{
-            if(lastNumber == "0"){
-                all.replace(all.size()-1, 1, text);
-                lastNumber = "";
-            }
-            else
-                all.push_back(text);
-        }
+        else
+            all.push_back(text);
         ui->result->setText(all);
         lastNumber.push_back(all[all.size()-1]);
     }
@@ -146,14 +140,13 @@ void MainWindow::on_pushButton_eq_clicked()
     QString firstNum,secondNum;
     int id;
     double res;
+
     if(lastNumber.size() == 0)
         all.remove(all.size()-1,1);
-    else{
-        if(lastNumber[lastNumber.size()-1] == "-")
-            all.remove(all.size()-2,2);
-        else if(lastNumber[lastNumber.size()-1] == ".")
-            all.remove(all.size()-1,1);
+    else if(lastNumber[lastNumber.size()-1] == "-"){
+        all.remove(all.size()-2,2);
     }
+
     QRegExp rx("([\\-]?\\d+\\.?\\d*)[\\/]([\\-]?\\d+\\.?\\d*)");
     QRegExp rx_d("([\\-]?\\d+\\.?\\d*)[x]([\\-]?\\d+\\.?\\d*)");
     while(rx.indexIn(all) != -1 || rx_d.indexIn(all) != -1){
