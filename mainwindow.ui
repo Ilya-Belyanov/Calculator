@@ -38,7 +38,7 @@
    <string>Calculator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resourses.qrc">
+   <iconset resource="resourse.qrc">
     <normaloff>:/res/media/calc.png</normaloff>:/res/media/calc.png</iconset>
   </property>
   <property name="styleSheet">
@@ -605,7 +605,7 @@ QPushButton:pressed{
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="resourses.qrc"/>
+  <include location="resourse.qrc"/>
  </resources>
  <connections/>
 </ui>

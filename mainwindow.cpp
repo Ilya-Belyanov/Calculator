@@ -40,7 +40,7 @@ void MainWindow::math_op()
 }
 
 void MainWindow::set_math_op(QString text){
-    if (checkMax() || lastNumber.size() == 15){
+    if (checkMax() || lastNumber.size() >= 15){
         QString all = ui->result->text();
         if(isdigit(QString(all).toStdString()[all.size()-1])){
             all.append(text);
@@ -165,7 +165,7 @@ void MainWindow::on_pushButton_eq_clicked()
             res = firstNum.toDouble() * secondNum.toDouble();
         }
 
-        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 15));
+        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 31));
     }
     QRegExp rx_m("([\\-]?\\d+\\.?\\d*)[\\-]([\\-]?\\d+\\.?\\d*)");
     QRegExp rx_p("([\\-]?\\d+\\.?\\d*)[\\+]([\\-]?\\d+\\.?\\d*)");
@@ -183,7 +183,7 @@ void MainWindow::on_pushButton_eq_clicked()
             res = firstNum.toDouble() + secondNum.toDouble();
         }
 
-        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 15));
+        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 31));
     }
     ui->result->setText(all);
     lastNumber = all;
