@@ -18,8 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_7, SIGNAL(clicked()), this, SLOT(digits()));
     connect(ui->pushButton_8, SIGNAL(clicked()), this, SLOT(digits()));
     connect(ui->pushButton_9, SIGNAL(clicked()), this, SLOT(digits()));
-    connect(ui->pushButton_plusminus, SIGNAL(clicked()), this, SLOT(operations()));
-    connect(ui->pushButton_proc, SIGNAL(clicked()), this, SLOT(operations()));
+    connect(ui->pushButton_plusminus, SIGNAL(clicked()), this, SLOT(set_operations_plusminus()));
+    connect(ui->pushButton_proc, SIGNAL(clicked()), this, SLOT(set_operations_proc()));
     connect(ui->pushButton_devide, SIGNAL(clicked()), this, SLOT(math_op()));
     connect(ui->pushButton_minus, SIGNAL(clicked()), this, SLOT(math_op()));
     connect(ui->pushButton_plus, SIGNAL(clicked()), this, SLOT(math_op()));
@@ -50,49 +50,47 @@ void MainWindow::set_math_op(QString text){
     }
 }
 
-void MainWindow::operations()
-{
-    QPushButton *button = (QPushButton *)sender();
-    set_operations(button->text());
 
-}
-
-void MainWindow::set_operations(QString text){
+void MainWindow::set_operations_plusminus(){
     QString all = ui->result->text();
     double newLast;
-    if(text == "+/-"){
-        if(lastNumber.size() != 0 && lastNumber != "0"){
-            if(lastNumber == '-'){
-                all.remove(all.size()-1,1);
-                lastNumber = "";
-                if(all.size()==0){
-                    all = "0";
-                    lastNumber = "0";
-                }
-            }
-            else{
-                newLast = (lastNumber).toDouble() *-1;
-                all.replace(all.size()-lastNumber.size(), lastNumber.size(), QString::number(newLast, 'g', 15));
-                lastNumber = QString::number(newLast, 'g', 15);
+    if(lastNumber.size() != 0 && lastNumber != "0"){
+        if(lastNumber == '-'){
+            all.remove(all.size()-1,1);
+            lastNumber = "";
+            if(all.size()==0){
+                all = "0";
+                lastNumber = "0";
             }
         }
         else{
-            if(lastNumber == "0"){
-                all.remove(all.size()-1,1);
-                lastNumber = "";}
-            all.push_back('-');
-            lastNumber.push_back('-');
-        }
-
-    }
-    else if(text == "%"){
-        if(lastNumber.size() != 0 && lastNumber != '-'){
-            newLast = (lastNumber).toDouble() *0.01;
+            newLast = (lastNumber).toDouble() *-1;
             all.replace(all.size()-lastNumber.size(), lastNumber.size(), QString::number(newLast, 'g', 15));
             lastNumber = QString::number(newLast, 'g', 15);
         }
     }
 
+    else{
+        if(lastNumber == "0"){
+            all.remove(all.size()-1,1);
+            lastNumber = "";}
+        all.push_back('-');
+        lastNumber.push_back('-');
+
+
+    }
+
+    ui->result->setText(all);
+}
+
+void MainWindow::set_operations_proc(){
+    QString all = ui->result->text();
+    double newLast;
+    if(lastNumber.size() != 0 && lastNumber != '-'){
+        newLast = (lastNumber).toDouble() *0.01;
+        all.replace(all.size()-lastNumber.size(), lastNumber.size(), QString::number(newLast, 'g', 15));
+        lastNumber = QString::number(newLast, 'g', 15);
+    }
     ui->result->setText(all);
 }
 
@@ -137,54 +135,7 @@ void MainWindow::on_pushButton_AC_clicked()
 void MainWindow::on_pushButton_eq_clicked()
 {
     QString all = ui->result->text();
-    QString firstNum,secondNum;
-    int id;
-    double res;
-
-    if(lastNumber.size() == 0)
-        all.remove(all.size()-1,1);
-    else if(lastNumber[lastNumber.size()-1] == "-"){
-        all.remove(all.size()-2,2);
-    }
-
-    QRegExp rx("([\\-]?\\d+\\.?\\d*)[\\/]([\\-]?\\d+\\.?\\d*)");
-    QRegExp rx_d("([\\-]?\\d+\\.?\\d*)[x]([\\-]?\\d+\\.?\\d*)");
-    while(rx.indexIn(all) != -1 || rx_d.indexIn(all) != -1){
-        if(rx_d.indexIn(all) == -1 || (rx.indexIn(all)<rx_d.indexIn(all) && rx.indexIn(all) != -1)){
-            firstNum = rx.cap(1);
-            secondNum = rx.cap(2);
-            id = rx.indexIn(all);
-            res = firstNum.toDouble() / secondNum.toDouble();
-            if(secondNum.toDouble() == 0)
-                res = 0;
-        }
-        else{
-            firstNum = rx_d.cap(1);
-            secondNum = rx_d.cap(2);
-            id = rx_d.indexIn(all);
-            res = firstNum.toDouble() * secondNum.toDouble();
-        }
-
-        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 31));
-    }
-    QRegExp rx_m("([\\-]?\\d+\\.?\\d*)[\\-]([\\-]?\\d+\\.?\\d*)");
-    QRegExp rx_p("([\\-]?\\d+\\.?\\d*)[\\+]([\\-]?\\d+\\.?\\d*)");
-    while(rx_m.indexIn(all) != -1 || rx_p.indexIn(all) != -1){
-        if(rx_p.indexIn(all) == -1 || (rx_m.indexIn(all)<rx_p.indexIn(all) && rx_m.indexIn(all) != -1)){
-            firstNum = rx_m.cap(1);
-            secondNum = rx_m.cap(2);
-            id = rx_m.indexIn(all);
-            res = firstNum.toDouble() - secondNum.toDouble();
-        }
-        else {
-            firstNum = rx_p.cap(1);
-            secondNum = rx_p.cap(2);
-            id = rx_p.indexIn(all);
-            res = firstNum.toDouble() + secondNum.toDouble();
-        }
-
-        all.replace(id, firstNum.size()+secondNum.size()+1, QString::number(res, 'g', 31));
-    }
+    all = calc.calcAll(all);
     ui->result->setText(all);
     lastNumber = all;
 }
@@ -201,12 +152,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         on_pushButton_AC_clicked();
 
     if(event->key() == Qt::Key_Control){
-        QString text = "+/-";
-        set_operations(text);}
+        set_operations_plusminus();}
 
     if(event->key() == Qt::Key_Alt){
-        QString text = "%";
-        set_operations(text);}
+        set_operations_proc();}
 
     if(event->key() == Qt::Key_Slash){
         QString text = "/";

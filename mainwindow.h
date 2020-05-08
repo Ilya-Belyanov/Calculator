@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <qDebug>
 #include <QtGui>
+#include "calculator.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,13 +21,13 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    Calculator calc;
 private slots:
     void digits();
     void set_digits(QString text);
     void on_pushButton_point_clicked();
-    void operations();
-    void set_operations(QString text);
+    void set_operations_plusminus();
+    void set_operations_proc();
     void on_pushButton_AC_clicked();
     void on_pushButton_eq_clicked();
     void math_op();
