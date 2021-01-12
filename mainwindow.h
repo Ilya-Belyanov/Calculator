@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qDebug>
+#include <QDebug>
 #include <QtGui>
 #include "calculator.h"
 

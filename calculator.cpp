@@ -85,7 +85,7 @@ QString Calculator::countPath(QString all, QRegExp rxOne, QRegExp rxTwo, QString
             res = doOperation(firstNum, opTwo, secondNum);
         }
 
-        all.replace(id, firstNum.size()+secondNum.size()+1, res);
+        all.replace(id, firstNum.size() + secondNum.size()+1, res);
     }
 
     return all;
